@@ -31,15 +31,22 @@ module cpu #(
     REG_T MACH; // Multiply-Accumulate High
     REG_T MACL; // Multiply-Accumulate Low 
 
-    // Instruction decode
-    always_comb begin
-        opcode = instr;
-        src_reg = instr[11:8];
-        dst_reg = instr[7:4];
-        imm4    = instr[3:0];
-        imm8    = instr[7:0];
-        disp12  = instr[11:0];
-    end
+    // pipeline stages
+    typedef enum logic[4:0] {
+        IFETCH  = 5'b00001,
+        DECODE  = 5'b00010,
+        EXECUTE = 5'b00100,
+        MEMORY  = 5'b01000,
+        WRITEBACK = 5'b10000
+    } state_t;
+
+    // fetch stage
+    typedef struct packed {
+        logic [31:0] instr;
+        logic [31:0] pc;
+    } fetch_to_decode_s;
+
+
 
     // Control signals default
     always_ff @(posedge clk or negedge reset) begin
