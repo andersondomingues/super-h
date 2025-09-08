@@ -1,3 +1,50 @@
+package sh1
+
+// Control registers are SR, GBR and VBR    
+enum logic [1:0] {
+    SR  = 2'd0,
+    GBR = 2'd1,
+    VBR = 2'd2
+} control_registers_e;
+
+// SR has 9 flags: T, S, I(4 bits), Q, and M
+enum logic [3:0] {
+    T = 0,
+    S = 1,
+    I0 = 4,
+    I1 = 5,
+    I2 = 6,
+    I3 = 7,
+    Q = 8,
+    M = 9
+} sr_flags_e;
+
+// General purpose registers R0-R15 (R15 is also the stack pointer)
+enum logic [3:0] {
+    R0 = 4'd0,
+    R1 = 4'd1,
+    R2 = 4'd2,
+    R3 = 4'd3,
+    R4 = 4'd4,
+    R5 = 4'd5,
+    R6 = 4'd6,
+    R7 = 4'd7,
+    R8 = 4'd8,
+    R9 = 4'd9,
+    R10 = 4'd10,
+    R11 = 4'd11,
+    R12 = 4'd12,
+    R13 = 4'd13,
+    R14 = 4'd14,
+    R15 = 4'd15
+    SP = R15, // Stack Pointer
+} general_purpose_registers_e;
+
+
+
+endpackage
+
+
 // ===== Data Transfer Instructions ==========================================
 // Instruction            Code                  0peration State
 // MOV     #imm,Rn        1110 nnnn iiii iiii   imm ~ Sign extension ~ Rn

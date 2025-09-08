@@ -44,8 +44,21 @@ module cpu #(
     typedef struct packed {
         logic [31:0] instr;
         logic [31:0] pc;
-    } fetch_to_decode_s;
+    } fetch_to_decode1_s;
 
+    typedef struct packed {
+        logic [31:0] instr;
+        logic [31:0] pc;
+    } decode1_to_decode2_s;
+
+    //decode
+    always_ff @(posedge clk or negedge n_reset) begin
+        if (!n_reset) begin
+            PC <= 32'h00000000; // Reset PC to 0
+        end else if (!stall) begin
+            PC <= PC + 4; // Increment PC by 4 (assuming 32-bit instructions)
+        end
+    end
 
 
     // Control signals default
