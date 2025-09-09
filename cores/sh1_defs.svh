@@ -1,5 +1,13 @@
 package sh1
 
+enum logic[2:0] {
+    FETCH = 3'd0,
+    DECODE = 3'd1,
+    EXECUTE = 3'd2,
+    MEMORY = 3'd3,
+    WRITEBACK = 3'd4
+} pipeline_stage_e;
+
 // Control registers are SR, GBR and VBR    
 enum logic [1:0] {
     SR  = 2'd0,

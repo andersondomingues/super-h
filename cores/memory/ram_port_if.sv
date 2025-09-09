@@ -1,5 +1,5 @@
 
-interface dual_port_ram_port_if #(
+interface ram_port_if #(
     parameter ADDR_WIDTH = 8,
     parameter DATA_WIDTH = 32,
     parameter DEPTH = 1 << ADDR_WIDTH

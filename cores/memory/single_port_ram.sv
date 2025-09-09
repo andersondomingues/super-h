@@ -1,5 +1,5 @@
 
-module dual_port_ram #(
+module single_port_ram #(
     parameter ADDR_WIDTH = 8,
     parameter DATA_WIDTH = 32,
     parameter DEPTH = 1 << ADDR_WIDTH
@@ -20,15 +20,5 @@ module dual_port_ram #(
     end
 
     assign a.rdata = mem[a.addr];
-
-    // Port B operations
-    always_ff @(posedge clk) begin
-        if (b.en) begin
-            if (b.we)
-                mem[b.addr] <= b.wdata;
-        end
-    end
-
-    assign b.rdata = mem[b.addr];
 
 endmodule
