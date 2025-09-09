@@ -9,10 +9,8 @@ module fetch_stage #(
     output logic [31:0] instr_out,
     input logic stall
 );
-    typedef logic[REG_WIDTH-1:0] REG_T;
-
-    // Fetch stage registers
-    REG_T PC; // Program Counter
+    // PC has 30 bits to avoid unaligned accesses
+    logic[REG_WIDTH-1:2] PC; 
 
     // Output assignments
     assign PC_out = PC;
