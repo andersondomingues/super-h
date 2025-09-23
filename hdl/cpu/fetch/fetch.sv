@@ -24,15 +24,14 @@ module fetch_stage #(
         end
     end
 
+    assign instr_mem.en = 1'b1;  // Keep memory port enabled
+    assign instr_mem.we = 1'b0;  // Always in read mode
+
     // Instruction fetch logic
     always_ff @(posedge clk) begin
         if (!stall) begin
-            instr_mem.en <= 1'b1;
-            instr_mem.we <= 1'b0;
             instr_mem.addr <= PC[ADDR_WIDTH+1:2]; // Assuming word-aligned addresses
-        end else begin
-            instr_mem.en <= 1'b0;
+            instr_out = instr_mem.rdata;
         end
     end
-
-    assign instr_out = instr_mem.rdata;
+    assign 

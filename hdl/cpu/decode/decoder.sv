@@ -2,12 +2,12 @@ ZERO GROUP
 // STC     SR,Rn          0000 nnnn 0000 0010     SR~Rn
 // STC     GBR,Rn         0000 nnnn 0001 0010     GBR ~Rn
 // STC     VBR,Rn         0000 nnnn 0010 0010     VBR~Rn
-// BRAF    Rm             0000 mmmm 0010 0011      Delayed branch, Rm + PC ~ PC
-// BSRF    Rm             0000 mmmm 0000 0011      Delayed branch, PC ~ PR, Rm + PC ~ PC
-// MOV.B   Rm,@(R0, Rn)   0000 nnnn mmmm 0100   Rm~ (R0+ Rn) 1
-// MOV.W   Rm,@(R0,Rn)    0000 nnnn mmmm 0101   Rm~ (R0+ Rn)
-// MUL.L   Rm,Rn* 2       0000 nnnn mmmm 0111     Rn x Rm ~ MACL, 2 to 4*132 x 32 ~ 32 bits
-// MUL.L   Rm,Rn          0000 nnnn mmmm 0111     Rn x Rm ~ MACL (32x32→32 bits)
+// BRAF    Rm             0000 mmmm 0010 0011     Delayed branch, Rm + PC ~ PC
+// BSRF    Rm             0000 mmmm 0000 0011     Delayed branch, PC ~ PR, Rm + PC ~ PC
+// MOV.B   Rm,@(R0, Rn)   0000 nnnn mmmm 0100     Rm~ (R0+ Rn) 1
+// MOV.W   Rm,@(R0,Rn)    0000 nnnn mmmm 0101     Rm~ (R0+ Rn)
+"mul" MUL.L   Rm,Rn* 2       0000 nnnn mmmm 0111     Rn x Rm ~ MACL, 2 to 4*132 x 32 ~ 32 bits
+"mul" MUL.L   Rm,Rn          0000 nnnn mmmm 0111     Rn x Rm ~ MACL (32x32→32 bits)
 // CLRT                   0000 0000 0000 1000     0~T 0
 // CLRMAC                 0000 0000 0010 1000     0 ~ MACH, MACL
 // SETT                   0000 0000 0001 1000     1~T
@@ -26,14 +26,14 @@ ONE
 
 
 TWO
-// CMP/STR   Rm,Rn        0010 nnnn mmmm 1100     If Rn and Rm have an equivalent byte, 1 ~ T
-// DIV0S     Rm,Rn        0010 nnnn mmmm 0111     MSB of Rn ~ Q, MSB of Rm ~ M
-// MULS.W    Rm,Rn        0010 nnnn mmmm 1111     Signed Rn x Rm ~ MAC (16x16→32 bits)
-// MULU.W    Rm,Rn        0010 nnnn mmmm 1110     Unsigned Rn x Rm ~ MAC (16x16→32 bits)
-// CMP/STR   Rm,Rn        0010 nnnn mmmm 1100     If Rn and Rm have an Compariso equivalent byte, 1 ~ n result T
-// DIVOS     Rm,Rn        0010 nnnn mmmm 0111     MSB of Rn ~a. Calculation MSB of Rm ~ M, M A resulta~r
-// MULS.W    Rm,Rn        0010 nnnn mmmm 1111     Signed operation of 1 to 3*1RnxRm~MAC ·16 x 16 ~ 32 bits
-// MULU.W    Rm,Rn        0010 nnnn mmmm 1110     Unsigned operation 1 to 3*1of Rn x Rm -t MAC16 x 16 -t 32 bits
+"cmp" CMP/STR   Rm,Rn        0010 nnnn mmmm 1100     If Rn and Rm have an equivalent byte, 1 ~ T
+"div" DIV0S     Rm,Rn        0010 nnnn mmmm 0111     MSB of Rn ~ Q, MSB of Rm ~ M
+"mul" MULS.W    Rm,Rn        0010 nnnn mmmm 1111     Signed Rn x Rm ~ MAC (16x16→32 bits)
+"mul" MULU.W    Rm,Rn        0010 nnnn mmmm 1110     Unsigned Rn x Rm ~ MAC (16x16→32 bits)
+"cmp" CMP/STR   Rm,Rn        0010 nnnn mmmm 1100     If Rn and Rm have an Compariso equivalent byte, 1 ~ n result T
+"div" DIVOS     Rm,Rn        0010 nnnn mmmm 0111     MSB of Rn ~a. Calculation MSB of Rm ~ M, M A resulta~r
+"mul" MULS.W    Rm,Rn        0010 nnnn mmmm 1111     Signed operation of 1 to 3*1RnxRm~MAC ·16 x 16 ~ 32 bits
+"mul" MULU.W    Rm,Rn        0010 nnnn mmmm 1110     Unsigned operation 1 to 3*1of Rn x Rm -t MAC16 x 16 -t 32 bits
 "alu" AND     Rm,Rn          0010 nnnn mmmm 1001     Rn & Rm -t Rn
 "alu" OR      Rm,Rn          0010 nnnn mmmm 1011     Rn | Rm -t Rn
 // TST     Rrn,Rn         0010 nnnn mmmm 1000     Rn & Rm; if the result is Test 0, 1 -t T result
@@ -45,45 +45,53 @@ TWO
 // MOV.W   Rm,@-Rn        0010 nnnn mmmm 0101   Rn-2 ~ Rn, Rm ~ (Rn) 1
 // MOV.L   Rm,@-Rn        0010 nnnn mmmm 0110   Rn-4 ~ Rn, Rm ~ (Rn)
 
-THREE
+######### THREE: 0011 ---> reg arithm #####################################################
+0011 nnnn mmmm ab cd
+ab: 11=ADD, 10=SUBADDC
+cd: 00=normal, 10=with carry/borrow, 11=with overflow/underflow
+
 "alu" ADD       Rm,Rn        0011 nnnn mmmm 1100     Rn + Rm ~ Rn
 "alu" ADDC      Rm,Rn        0011 nnnn mmmm 1110     Rn + Rm + T ~ Rn, Carry ~ T
 "alu" ADDV      Rm,Rn        0011 nnnn mmmm 1111     Rn + Rm ~ Rn,     Overflow ~ T
 "alu" SUB       Rm,Rn        0011 nnnn mmmm 1000     Rn - Rm ~ Rn
 "alu" SUBC      Rm,Rn        0011 nnnn mmmm 1010     Rn - Rm - T ~ Rn, Borrow ~ T
 "alu" SUBV      Rm,Rn        0011 nnnn mmmm 1011     Rn - Rm ~ Rn,     Underflow ~ T
-// CMP/EQ    Rm,Rn        0011 nnnn mmmm 0000     If Rn = Rm, 1 ~ T
-// CMP/HS    Rm,Rn        0011 nnnn mmmm 0010     If Rn ≥ Rm (unsigned), 1 ~ T
-// CMP/GE    Rm,Rn        0011 nnnn mmmm 0011     If Rn ≥ Rm (signed), 1 ~ T
-// CMP/HI    Rm,Rn        0011 nnnn mmmm 0110     If Rn > Rm (unsigned), 1 ~ T
-// CMP/GT    Rm,Rn        0011 nnnn mmmm 0111     If Rn > Rm (signed), 1 ~ T
-// DIV1      Rm,Rn        0011 nnnn mmmm 0100     Single-step division (Rn / Rm)
-// DMULS.L   Rm,Rn        0011 nnnn mmmm 1101     Signed Rn x Rm ~ MACH, MACL (32x32→64 bits)
-// DMULU.L   Rm,Rn        0011 nnnn mmmm 0101     Unsigned Rn x Rm ~ MACH, MACL (32x32→64 bits)
+"cmp" CMP/EQ    Rm,Rn        0011 nnnn mmmm 0000     If Rn = Rm, 1 ~ T
+"cmp" CMP/HS    Rm,Rn        0011 nnnn mmmm 0010     If Rn ≥ Rm (unsigned), 1 ~ T
+"cmp" CMP/GE    Rm,Rn        0011 nnnn mmmm 0011     If Rn ≥ Rm (signed), 1 ~ T
+"cmp" CMP/HI    Rm,Rn        0011 nnnn mmmm 0110     If Rn > Rm (unsigned), 1 ~ T
+"cmp" CMP/GT    Rm,Rn        0011 nnnn mmmm 0111     If Rn > Rm (signed), 1 ~ T
+"div" DIV1      Rm,Rn        0011 nnnn mmmm 0100     Single-step division (Rn / Rm)
+"mul" DMULS.L   Rm,Rn        0011 nnnn mmmm 1101     Signed Rn x Rm ~ MACH, MACL (32x32→64 bits)
+"mul" DMULU.L   Rm,Rn        0011 nnnn mmmm 0101     Unsigned Rn x Rm ~ MACH, MACL (32x32→64 bits)
 
-// ====== FOUR
-"alu" ROTL    Rn             0100 nnnn 0000 0100     MSB of Rn -> T, Rn << 1 | T -> Rn
-"alu" ROTR    Rn             0100 nnnn 0000 0101     LSB of Rn -> T, Rn >> 1 | T << 31 -> Rn
-"alu" ROTCL   Rn             0100 nnnn 0010 0100     T -> MSB of Rn, Rn << 1 | T -> Rn
-"alu" ROTCR   Rn             0100 nnnn 0010 0101     T -> LSB of Rn, Rn >> 1 | T << 31 -> Rn
-"alu" SHAL    Rn             0100 nnnn 0010 0000     MSB of Rn -> T, Rn << 1 -> Rn
-"alu" SHAR    Rn             0100 nnnn 0010 0001     MSB of Rn -> T, Rn >> 1 (arithmetic) -> Rn
-"alu" SHLL    Rn             0100 nnnn 0000 0000     MSB of Rn -> T, Rn << 1 -> Rn
-"alu" SHLR    Rn             0100 nnnn 0000 0001     LSB of Rn -> T, Rn >> 1 -> Rn
-"alu" SHLL2   Rn             0100 nnnn 0000 1000     Rn << 2 -> Rn
-"alu" SHLR2   Rn             0100 nnnn 0000 1001     Rn >> 2 -> Rn
-"alu" SHLL8   Rn             0100 nnnn 0001 1000     Rn << 8 -> Rn
-"alu" SHLR8   Rn             0100 nnnn 0001 1001     Rn >> 8 -> Rn
-"alu" SHLL16  Rn             0100 nnnn 0010 1000     Rn << 16 -> Rn
-"alu" SHLR16  Rn             0100 nnnn 0010 1001     Rn >> 16 -> Rn
+######### FOUR: 0100 ---> shifts ##########################################################
+0100 nnnn 00 ab ? R0D
+direction, D: 0=left, 1=right
+rotation,  R: 0=shift, 1=rotate 
+ab (shl only): 00=2, 01=8, 10=16, 11=unused
+"shf" ROTL    Rn             0100 nnnn 0000 0100     MSB of Rn -> T, Rn << 1 | T -> Rn
+"shf" ROTR    Rn             0100 nnnn 0000 0101     LSB of Rn -> T, Rn >> 1 | T << 31 -> Rn
+"shf" ROTCL   Rn             0100 nnnn 0010 0100     T -> MSB of Rn, Rn << 1 | T -> Rn
+"shf" ROTCR   Rn             0100 nnnn 0010 0101     T -> LSB of Rn, Rn >> 1 | T << 31 -> Rn
+"shf" SHAL    Rn             0100 nnnn 0010 0000     MSB of Rn -> T, Rn << 1 -> Rn
+"shf" SHAR    Rn             0100 nnnn 0010 0001     MSB of Rn -> T, Rn >> 1 (arithmetic) -> Rn
+"shf" SHLL    Rn             0100 nnnn 0000 0000     MSB of Rn -> T, Rn << 1 -> Rn
+"shf" SHLR    Rn             0100 nnnn 0000 0001     LSB of Rn -> T, Rn >> 1 -> Rn
+"shf" SHLL2   Rn             0100 nnnn 0000 1000     Rn << 2 -> Rn
+"shf" SHLR2   Rn             0100 nnnn 0000 1001     Rn >> 2 -> Rn
+"shf" SHLL8   Rn             0100 nnnn 0001 1000     Rn << 8 -> Rn
+"shf" SHLR8   Rn             0100 nnnn 0001 1001     Rn >> 8 -> Rn
+"shf" SHLL16  Rn             0100 nnnn 0010 1000     Rn << 16 -> Rn
+"shf" SHLR16  Rn             0100 nnnn 0010 1001     Rn >> 16 -> Rn
 
 
-// CMP/PL    Rn           0100 nnnn 0001 0101     If Rn > 0, 1 ~ T
-// CMP/PZ    Rn           0100 nnnn 0001 0001     If Rn ≥ 0, 1 ~ T
+"cmp" CMP/PL    Rn           0100 nnnn 0001 0101     If Rn > 0, 1 ~ T
+"cmp" CMP/PZ    Rn           0100 nnnn 0001 0001     If Rn ≥ 0, 1 ~ T
 // DT        Rn           0100 nnnn 0001 0000     Rn - 1 ~ Rn, if Rn == 0, 1 ~ T else 0 ~ T
 // MAC.W     @Rm+,@Rn+    0100 nnnn mmmm 1111     (Rn) x (Rm) + MAC ~ MAC (16x16+64→64 bits)
-// CMP/PL    Rn           0100 nnnn 0001 0101     If Rn> 0, 1 ~ T Comparison result
-// CMP/PZ    Rn           0100 nnnn 0001 0001     If Rn ;o: 0, 1 ~ T Comparison result
+"cmp" CMP/PL    Rn           0100 nnnn 0001 0101     If Rn> 0, 1 ~ T Comparison result
+"cmp" CMP/PZ    Rn           0100 nnnn 0001 0001     If Rn ;o: 0, 1 ~ T Comparison result
 // DT        Rn*2         0100 nnnn 0001 0000     Rn - 1 ~ Rn, when ComparisoRn is 0, 1 ~ T. When n resultRn is nonzero, 0 ~ T
 // MAC.W     @Rm+,@Rn+    0100 nnnn mmmm 1111     Signed operation of 3/(2)* 1(Rn) x (Rm) + MAC~MAC(SH-2 CPU) 16 x 16 +64 ~ 64 bits(SH-1 CPU) 16 x 16 +42 ~ 42 bits
 // TAS.B   @Rn            0100 nnnn 0001 1011     If (Rn) is 0, 1 -t T; 1 -t 4 Test MSB of (Rn) result
@@ -126,15 +134,15 @@ SIX
 // EXTS.W    Rm,Rn        0110 nnnn mmmm 1111     Sign-extend word in Rm ~ Rn
 // EXTU.B    Rm,Rn        0110 nnnn mmmm 1100     Zero-extend byte in Rm ~ Rn
 // EXTU.W    Rm,Rn        0110 nnnn mmmm 1101     Zero-extend word in Rm ~ Rn
-// NEG       Rm,Rn        0110 nnnn mmmm 1011     0 - Rm ~ Rn
-// NEGC      Rm,Rn        0110 nnnn mmmm 1010     0 - Rm - T ~ Rn, Borrow ~ T
+"alu" NEG       Rm,Rn        0110 nnnn mmmm 1011     0 - Rm ~ Rn
+"alu" NEGC      Rm,Rn        0110 nnnn mmmm 1010     0 - Rm - T ~ Rn, Borrow ~ T
 // EXTS.B    Rm,Rn        0110 nnnn mmmm 1110     A byte in Rm is sign-extended ~ Rn
 // EXTS.W    Rm,Rn        0110 nnnn mmmm 1111     A word in Rm is sign-extended ~ Rn
 // EXTU.B    Rm,Rn        0110 nnnn mmmm 1100     A byte in Rm is zero-extended ~ Rn
 // EXTU.W    Rm,Rn        0110 nnnn mmmm 1101     A word in Rm is zero-extended ~ Rn
-// NEG       Rm,Rn        0110 nnnn mmmm 1011     0-Rm -t Rn
-// NEGC      Rm,Rn        0110 nnnn mmmm 1010     0-Rm-T -t Rn, BorrowBorrow -t T
-// NOT       Rm,Rn        0110 nnnn mmmm 0111     -Rm -t Rn
+"alu" NEG       Rm,Rn        0110 nnnn mmmm 1011     0-Rm -t Rn
+"alu" NEGC      Rm,Rn        0110 nnnn mmmm 1010     0-Rm-T -t Rn, BorrowBorrow -t T
+"alu" NOT       Rm,Rn        0110 nnnn mmmm 0111     -Rm -t Rn
 
 SEVEN
 "alu" ADD       #imm,Rn      0111 nnnn iiii iiii     Rn + imm ~ Rn
@@ -144,8 +152,8 @@ EIGTH
 // MOV.W   R0,@(disp,Rn)  1000 0001 nnnn dddd   R0~ (disp x2 +Rn)
 // MOV.B   @(disp,Rm),R0  1000 0100 mmmm dddd   (disp +Rm)~ Sign extension ~ R0
 // MOV.W   @(disp,Rm) ,R0 1000 0101 mmmm dddd   (disp x 2 + Rm) ~ Sign extension ~ R0
-// CMP/EQ    #imm,R0      1000 1000 iiii iiii     If R0 = imm, 1 ~ T
-// CMP/EQ    #irrm,RO     1000 1000 iiii iiii     If RO =imm, 1 ~ T Comparison result
+"cmp" CMP/EQ    #imm,R0      1000 1000 iiii iiii     If R0 = imm, 1 ~ T
+"cmp" CMP/EQ    #irrm,RO     1000 1000 iiii iiii     If RO =imm, 1 ~ T Comparison result
 // BF     label           1000 1011 dddd dddd      If T = 0, disp x 2 + PC ~ PC; if T = 1, nop (where label is disp x 2 + PC)
 // BF/S   label           1000 1111 dddd dddd      Delayed branch, if T = 0, disp x 2 + PC ~ PC; if T = 1, nop
 // BT     label           1000 1001 dddd dddd      If T = 1, disp x 2 + PC ~ PC; if T = 0, nop (where label is disp x 2 + PC)
