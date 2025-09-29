@@ -48,7 +48,22 @@ enum logic [3:0] {
     SP = R15, // Stack Pointer
 } general_purpose_registers_e;
 
-
+enum logic [7:0] {
+    ROTL        = 8'b0000_0100,
+    ROTR        = 8'b0000_0101,
+    ROTCL       = 8'b0010_0100,
+    ROTCR       = 8'b0010_0101,
+    SHAL        = 8'b0010_0000,
+    SHAR        = 8'b0010_0001,
+    SHLL        = 8'b0000_0000,
+    SHLR        = 8'b0000_0001,
+    SHLL2       = 8'b0000_1000,
+    SHLR2       = 8'b0000_1001,
+    SHLL8       = 8'b0001_1000,
+    SHLR8       = 8'b0001_1001,
+    SHLL16      = 8'b0010_1000,
+    SHLR16      = 8'b0010_1001
+} shifter_ops;
 
 endpackage
 
